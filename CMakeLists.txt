@@ -61,7 +61,7 @@ find_package(OpenCV REQUIRED)
 ## Generate services in the 'srv' folder
  add_service_files(
    FILES
-   image_cmd.srv
+   SaveImage.srv
  )
 
 ## Generate actions in the 'action' folder

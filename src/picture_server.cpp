@@ -3,7 +3,7 @@
 #include <image_transport/image_transport.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
-#include "picture_server/image_cmd.h"
+#include "picture_server/SaveImage.h"
 #include <sstream>
 //Class creation to allow the use of camera callback msg in the service
 class PictureServer{
@@ -20,7 +20,8 @@ public:
 	  }
 	}
 	// service callback that receives "angle" (int representing image name), "path" (path to save image data) and "cmd" (comand confirming if the camera data should be saved). The service response should return a "result" returning 1 if the data was correctly saved
-	bool check_and_print(picture_server::image_cmd::Request &req, picture_server::image_cmd::Response &res){
+	bool check_and_print(picture_server::SaveImage::Request &req, picture_server::SaveImage::Response &res){
+		ROS_INFO("Got new request!");
 		if (req.cmd){
 			//image name composed by path (finished with "/")+ capture angle+extension
 			std::string im_name = req.path + req.num_name+ ".png";
@@ -49,9 +50,11 @@ int main(int argc, char **argv)
   PictureServer mi;
   ros::init(argc, argv, "Img_Ctrl_server");
   ros::NodeHandle nh;
+  std::string picture_topic;
   image_transport::ImageTransport it(nh);
   ros::ServiceServer service = nh.advertiseService("image_cmd", &PictureServer::check_and_print, &mi);
-  image_transport::Subscriber sub = it.subscribe("cam_pub", 1, &PictureServer::imageCallback, &mi);
-
+  nh.param<std::string>("picture_topic", picture_topic, "/strawberry/faces/face_at_center/image_raw");
+  image_transport::Subscriber sub = it.subscribe(picture_topic, 1, &PictureServer::imageCallback, &mi);
+  ROS_INFO_STREAM(picture_topic);
   ros::spin();
 }

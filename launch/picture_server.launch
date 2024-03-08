@@ -1,9 +1,6 @@
 <launch>
 
-  <param name="cam_device" value="0" type="int"/>  
-  <param name="image_show" value="0" type="int"/>  
-  <node pkg="picture_server" name="cam_publisher" type="cam_publisher"/>
-
-  <node pkg="picture_server" name="picture_server" type="picture_server"/>
+  <param name="picture_topic" value="/strawberry/faces/face_at_center/image_raw" type="string"/>  
+  <node pkg="picture_server" name="picture_server" type="picture_server" output="screen"/>
   
 </launch>
